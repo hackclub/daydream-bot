@@ -1,0 +1,21 @@
+{
+	"name": "daydream-bot",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@slack/bolt": "^4.4.0",
+		"node-cron": "^4.2.1",
+		"prettier": "^3.6.2"
+	},
+	"scripts": {
+		"format": "prettier --write .",
+		"lint": "prettier --check ."
+	}
+}
