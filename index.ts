@@ -92,5 +92,3 @@ cron.schedule("0 9 * * *", sendLeaderboard);
 
 app.start();
 console.log("Daydream bot running");
-
-sendLeaderboard();
