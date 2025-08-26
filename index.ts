@@ -39,20 +39,47 @@ async function sendLeaderboard() {
 			totalSignups,
 			recentSignups,
 		};
+	}).sort((a, b) => {
+		if (b.recentSignups !== a.recentSignups) {
+			return b.recentSignups - a.recentSignups;
+		}
+		return b.totalSignups - a.totalSignups;
 	});
 
-	const topEvents = eventStats
-		.sort((a, b) => b.recentSignups - a.recentSignups)
-		.slice(0, 10);
-
-	const leaderboard = topEvents
-		.map((event, i) => `${i + 1}. ${event.name}: *+${event.recentSignups}* (\`${event.totalSignups} total\`)`)
-		.join("\n");
+	const allEvents = eventStats.filter(event => event.recentSignups > 0);
+	const topEvents = allEvents.slice(0, 10);
+	let leaderboard = "";
+	for (let i = 0; i < topEvents.length; i++) {
+		const event = topEvents[i] as typeof topEvents[number];
+		leaderboard += `${i + 1}. ${event.name}: *+${event.recentSignups}* (\`${event.totalSignups} total\`)`;
+		if (i == 0 || event.recentSignups > 15) {
+			leaderboard += " :fire:"
+		}
+		leaderboard += "\n"
+	}
+	
+	let otherEvents = "";
+	let lastCount = Infinity;
+	for (let i = 10; i < allEvents.length; i++) {
+		const event = allEvents[i] as typeof allEvents[number]
+		if (event?.recentSignups < lastCount) {
+			lastCount = event.recentSignups
+			otherEvents += `> +${lastCount}: ${event.name} (\`${event.totalSignups}\`)`
+		} else {
+			otherEvents += `, ${event.name} (\`${event.totalSignups}\`)`
+		}
+	}
     
-    const message = `:trophy:  *Daydream Sign-Ups*
+    let message = `:trophy:  *Daydream Sign-Ups*
 
 Top 10 events by new sign-ups:
 ${leaderboard}`;
+	
+	if (allEvents.length > 10) {
+		message += 	`
+Other events with recent signups:
+${otherEvents}`
+	}
 
 	await app.client.chat.postMessage({
 		channel: process.env.CHANNEL_ID as string,
