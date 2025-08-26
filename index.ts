@@ -87,8 +87,8 @@ ${otherEvents}`
 	});
 }
 
-// schedule for 9 AM daily
-cron.schedule("0 9 * * *", sendLeaderboard);
+// schedule for 9 AM and 9 PM daily
+cron.schedule("0 9,21 * * *", sendLeaderboard);
 
 app.start();
 console.log("Daydream bot running");
